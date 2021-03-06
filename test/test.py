@@ -57,12 +57,12 @@ class CoffeeTest(unittest.TestCase):
         :return: Test case success if the machine works as desired else Assertion Exception and test fails
         """
         res = self.coffee_machine.process_data(self.data)
+        print("#############################")
+        print(res)
         res.sort()
         if BLACK_TEA_IS_PREPARED in res:
             self.success_order.append(BLACK_TEA)
         self.assertIn(list(res), TEST_RESULT)
-        print("#############################")
-        print(res)
         print("test_1_init_machine : SUCCESS")
         print("#############################")
 
@@ -107,10 +107,10 @@ class CoffeeTest(unittest.TestCase):
         :return: None
         """
         res = self.coffee_machine.process_data(self.data)
-        res.sort()
-        self.assertEqual(list(res), TEST_RESULT_4)
         print("############################")
         print(res)
+        res.sort()
+        self.assertEqual(list(res), TEST_RESULT_4)
         print("test_4_after_refill : SUCCESS")
         print("#############################")
 

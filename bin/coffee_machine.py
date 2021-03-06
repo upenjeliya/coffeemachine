@@ -20,19 +20,19 @@ def _process_order(lock, ret, items, given_order):
     failed_ingredient = ""
     unavailable_ingredient = ""
     lock.acquire()
-    for ingredient in beverage:
+    for ingredient in beverage:  # We check if all required items by a beverage is in sufficient quantity
         required = beverage[ingredient]
         if ingredient in items:
             available = items[ingredient]
         else:
             build_order = False
-            unavailable_ingredient = ingredient
+            unavailable_ingredient = ingredient  # Ingredient is not available, just exit
             break
         if required > available:
             build_order = False
             if not failed_ingredient:
                 failed_ingredient = ingredient
-    if build_order:
+    if build_order:  # Items required are available, prepare the order and update total items quantity
         for ingredient in beverage:
             required = beverage[ingredient]
             items[ingredient] -= required
@@ -86,7 +86,6 @@ class CoffeeMachine:
         :param current_orders: The orders up to number of outlets
         :return: ret : List containing print statements of orders prepared or failed
         """
-        process_queue = []
         self.lock.acquire()
         total_items = self.manager.dict(self.items)
         ret = self.manager.list()
@@ -97,12 +96,6 @@ class CoffeeMachine:
         func = partial(_process_order, lock, ret, total_items)
         pool.map(func, current_orders)
         pool.close()
-        # for i in range(len(current_orders)):
-        #     parallel_order = Process(target=_process_order, args=(ret, total_items, current_orders[i],))
-        #     parallel_order.start()
-        #     process_queue.append(parallel_order)
-        # for proc in process_queue:
-        #     proc.join()
         self._update_items(total_items)
         self.lock.release()
         return ret
